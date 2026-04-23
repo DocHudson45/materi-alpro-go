@@ -1,3 +1,48 @@
+# 📚 Dokumentasi API (Tugas Workshop ALPRO)
+
+Berikut adalah Dokumentasi API untuk Modul User yang ditambahkan untuk memenuhi _Challenge A_ dan _Challenge B_.
+
+### Tabel Endpoint API
+
+| HTTP Method | URL/Endpoint    | Authorization    | Deskripsi Goal                                                                    |
+| ----------- | --------------- | ---------------- | --------------------------------------------------------------------------------- |
+| `GET`       | `/api/user`     | _Tidak Perlu_    | Mengambil daftar seluruh user (Menyelesaikan **Challenge B**)                     |
+| `GET`       | `/api/user/:id` | **Bearer Token** | Mengambil profil spesifik satu user berdasar UUID (Menyelesaikan **Challenge A**) |
+
+### Contoh Respons Berhasil (Status 200 OK)
+
+Permintaan `GET /api/user/:id` dengan Data UUID Valid:
+
+```json
+{
+  "status": true,
+  "message": "success get user",
+  "data": {
+    "id": "9a2b9546-15e4-45c7-a615-d9ce1e0d053e",
+    "name": "user",
+    "email": "user1234@gmail.com",
+    "telp_number": "08123456789",
+    "role": "user",
+    "image_url": "",
+    "is_verified": true
+  }
+}
+```
+
+### Contoh Respons Gagal (Status 404 Not Found)
+
+Permintaan `GET /api/user/:id` dengan Data UUID Ngawur / Tidak Tersedia:
+
+```json
+{
+  "status": false,
+  "message": "failed get user",
+  "error": "record not found"
+}
+```
+
+---
+
 # Materi Backend Camin ALPRO
 
 ---
@@ -49,6 +94,7 @@ Sebelum menulis kode, penting untuk memahami konsep-konsep dasar yang menjadi fo
 Ketika kamu membuka sebuah aplikasi (misalnya Instagram), yang kamu lihat di layar adalah **frontend** -- tampilan visual yang kamu interaksikan. Tapi di balik layar, ada **backend** -- server yang memproses data, menyimpan informasi ke database, mengecek apakah kamu sudah login, dan mengirimkan data yang diminta oleh frontend.
 
 Secara singkat:
+
 - **Frontend** = apa yang dilihat pengguna (UI/tampilan)
 - **Backend** = apa yang terjadi di belakang layar (server, database, logic)
 - **API (Application Programming Interface)** = "kontrak" komunikasi antara frontend dan backend. Frontend mengirim **request**, backend membalas dengan **response**.
@@ -66,11 +112,11 @@ Tidak ada satu jenis database yang cocok untuk semua kebutuhan. Pilihan database
 
 Menyimpan data dalam bentuk tabel dengan baris dan kolom. Hubungan antar tabel didefinisikan secara eksplisit.
 
-| Kapan digunakan | Contoh kasus |
-|---|---|
-| Data terstruktur dengan skema yang jelas | Data transaksi keuangan |
-| Butuh ACID (Atomicity, Consistency, Isolation, Durability) | Sistem pemesanan tiket |
-| Ada relasi kompleks antar entitas | Sistem manajemen pengguna |
+| Kapan digunakan                                            | Contoh kasus              |
+| ---------------------------------------------------------- | ------------------------- |
+| Data terstruktur dengan skema yang jelas                   | Data transaksi keuangan   |
+| Butuh ACID (Atomicity, Consistency, Isolation, Durability) | Sistem pemesanan tiket    |
+| Ada relasi kompleks antar entitas                          | Sistem manajemen pengguna |
 
 ```sql
 -- Contoh query SQL
@@ -89,11 +135,11 @@ WHERE users.id = 1;
 
 Menyimpan data dalam format yang lebih fleksibel -- bisa dokumen JSON, pasangan key-value, graph, dll.
 
-| Kapan digunakan | Contoh kasus |
-|---|---|
-| Skema data sering berubah | Katalog produk e-commerce |
-| Volume data sangat besar dan perlu scale horizontal | Social media feed |
-| Kebutuhan read/write sangat cepat (caching) | Session storage, rate limiting |
+| Kapan digunakan                                     | Contoh kasus                   |
+| --------------------------------------------------- | ------------------------------ |
+| Skema data sering berubah                           | Katalog produk e-commerce      |
+| Volume data sangat besar dan perlu scale horizontal | Social media feed              |
+| Kebutuhan read/write sangat cepat (caching)         | Session storage, rate limiting |
 
 > [!TIP]
 > **Aturan praktis:** Mulai dengan SQL. Pindah ke NoSQL hanya jika ada alasan teknis yang jelas, bukan karena terasa "lebih modern".
@@ -102,7 +148,7 @@ Menyimpan data dalam format yang lebih fleksibel -- bisa dokumen JSON, pasangan 
 
 ### Authentication: Session vs JWT
 
-Authentication adalah proses verifikasi identitas: *"Apakah kamu benar-benar siapa yang kamu klaim?"*
+Authentication adalah proses verifikasi identitas: _"Apakah kamu benar-benar siapa yang kamu klaim?"_
 
 > [!NOTE]
 > Bayangkan authentication seperti penjaga pintu masuk gedung. Kamu harus menunjukkan kartu identitas (username + password) untuk masuk. Setelah diverifikasi, kamu diberi tanda pengenal (token/session) agar tidak perlu menunjukkan kartu identitas setiap kali berpindah ruangan.
@@ -122,10 +168,10 @@ Server menyimpan informasi sesi di memorinya (atau di database/Redis). Setiap re
 > [!NOTE]
 > "Stateful" artinya server harus **mengingat** siapa yang sudah login. Ibarat hotel yang mencatat semua tamu di buku besar -- setiap kali tamu datang, petugas harus cek buku dulu.
 
-| Kelebihan | Kekurangan |
-|---|---|
-| Mudah di-revoke (hapus session dari server) | Stateful: server harus simpan data session |
-| Cocok untuk aplikasi monolitik | Sulit di-scale horizontal (session harus di-share antar server) |
+| Kelebihan                                   | Kekurangan                                                      |
+| ------------------------------------------- | --------------------------------------------------------------- |
+| Mudah di-revoke (hapus session dari server) | Stateful: server harus simpan data session                      |
+| Cocok untuk aplikasi monolitik              | Sulit di-scale horizontal (session harus di-share antar server) |
 
 #### JWT -- JSON Web Token (Stateless)
 
@@ -144,17 +190,18 @@ Server tidak menyimpan apapun. Semua informasi yang dibutuhkan ada di dalam toke
 > "Stateless" artinya server **tidak perlu mengingat** apapun. Semua informasi sudah ada di dalam token itu sendiri. Ibarat surat izin resmi yang bertanda tangan -- siapapun bisa memverifikasi bahwa surat itu asli hanya dari tanda tangannya, tanpa perlu menelepon kantor yang mengeluarkan surat.
 
 Struktur JWT terdiri dari tiga bagian yang dipisahkan titik:
+
 ```
 header.payload.signature
 
 eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.SflKxwRJSMeKKF2QT4fwpMeJf36P
 ```
 
-| Kelebihan | Kekurangan |
-|---|---|
-| Stateless: mudah di-scale | Sulit di-revoke sebelum expired |
+| Kelebihan                                    | Kekurangan                                                            |
+| -------------------------------------------- | --------------------------------------------------------------------- |
+| Stateless: mudah di-scale                    | Sulit di-revoke sebelum expired                                       |
 | Tidak butuh database lookup untuk verifikasi | Payload ter-encode (bukan terenkripsi) -- jangan simpan data sensitif |
-| Bisa digunakan lintas domain/service | Token besar -> overhead di setiap request |
+| Bisa digunakan lintas domain/service         | Token besar -> overhead di setiap request                             |
 
 > [!TIP]
 > **Rekomendasi:** JWT cocok untuk microservices dan API publik. Session cocok untuk web app tradisional di mana kontrol penuh atas session lebih penting.
@@ -177,6 +224,7 @@ A: Untuk menambah pengetahuan mengenai Go, dapat mengikuti [tour ini](https://go
 ---
 
 ## Environment Setup
+
 ### Instalasi Go
 
 Kamu dapat mendownload Go di website resmi mereka [disini](https://go.dev/doc/install).
@@ -205,9 +253,10 @@ go mod init {username kamu}/go-workshop
 > [!NOTE]
 > `mkdir` artinya "make directory" (buat folder). Tanda `&&` berarti "setelah command pertama selesai, jalankan command kedua." `cd` artinya "change directory" (pindah ke folder tersebut).
 
-`go mod init` bertanggung jawab untuk membuat file `go.mod`, yang dapat kamu anggap seperti peletak project kamu dengan dependency di dalam ataupun di luar project.  
+`go mod init` bertanggung jawab untuk membuat file `go.mod`, yang dapat kamu anggap seperti peletak project kamu dengan dependency di dalam ataupun di luar project.
 
 Isi di dalam `go.mod` kamu harusnya ini.
+
 ```
 module github.com/username/go-workshop
 
@@ -233,6 +282,7 @@ func main() {
 
 > [!NOTE]
 > **Catatan sintaks Go:**
+>
 > - `package main` -- Menandakan file ini adalah program yang bisa dijalankan langsung. Setiap program Go yang bisa dieksekusi **harus** memiliki `package main`.
 > - `import "fmt"` -- Mengimpor package `fmt` (singkatan dari "format"), package bawaan Go untuk mencetak teks ke terminal.
 > - `func main()` -- Fungsi entry point, titik mulai program. Ketika program dijalankan, Go akan mencari dan menjalankan fungsi `main()` ini pertama kali. Mirip `public static void main` di Java.
@@ -264,6 +314,7 @@ isActive := true
 ```
 
 > [!NOTE]
+>
 > - `var nama string = "Budi"` -- Deklarasi eksplisit: kamu menulis tipe datanya (`string`) secara manual.
 > - `nama := "Budi"` -- Short declaration: Go otomatis menebak tipe datanya berdasarkan nilai yang diberikan. Cara ini **hanya bisa dipakai di dalam fungsi**, bukan di level global.
 > - Tipe data dasar di Go: `string` (teks), `int` (bilangan bulat), `float64` (bilangan desimal), `bool` (true/false).
@@ -337,6 +388,7 @@ func bagi(a, b float64) (float64, error) {
 
 > [!NOTE]
 > **Catatan sintaks fungsi:**
+>
 > - `func sapa(nama string)` -- `func` adalah keyword untuk mendefinisikan fungsi. `nama string` berarti parameter `nama` bertipe `string`. Tidak ada return value.
 > - `func tambah(a int, b int) int` -- Bagian `int` terakhir setelah kurung tutup adalah **tipe return value**.
 > - `func bagi(a, b float64) (float64, error)` -- Fungsi ini mengembalikan **dua nilai**: hasil pembagian (`float64`) dan error. `(float64, error)` di dalam kurung menandakan multiple return.
@@ -366,6 +418,7 @@ fmt.Println(user.Name) // Output: Budi
 ```
 
 > [!NOTE]
+>
 > - `type User struct { ... }` -- Mendefinisikan tipe data baru bernama `User`. Mirip `class` di Java/Python, tapi **tanpa method bawaan dan tanpa inheritance**.
 > - `uint` artinya "unsigned integer" -- bilangan bulat yang tidak bisa negatif (0, 1, 2, ...).
 > - `user.Name` -- Mengakses field `Name` dari struct `user`, mirip mengakses property objek di bahasa lain.
@@ -373,7 +426,7 @@ fmt.Println(user.Name) // Output: Budi
 
 ### Error Handling
 
-Go tidak menggunakan `try-catch`. Error dikembalikan sebagai nilai return biasa.  
+Go tidak menggunakan `try-catch`. Error dikembalikan sebagai nilai return biasa.
 
 Go memiliki aturan yang sangat ketat yang ditetapkan, salah satunya adalah **tidak bolehnya ada variabel yang tidak dipakai**. Sebagai efeknya, error yang dikembalikan wajib diurus oleh programmer, jika tidak, program Go tidak akan jalan!
 
@@ -391,10 +444,10 @@ fmt.Println("Hasil:", result)
 
 Untuk menambah pengetahuan mengenai Go, dapat mengikuti [tour ini](https://go.dev/tour/list).
 
-
 ## Backend Di Go
 
 Go adalah salah satu bahasa yang paling populer dalam backend development, dengan alasan-alasan berikut:
+
 - Go cukup gampang untuk dimengerti, sehingga kode-kode yang dibuat lebih readable dan gampang dimaintain
 - Go adalah bahasa yang sangat _opinionated_ sampai aturan formattingnya ditetapkan secara universal, sehingga bahkan seorang BE developer yang tidak pernah menyentuh codebase, dapat mengerti control flow nya dengan cepat.
 - Fitur-fitur dasar Go sangat cocok untuk backend development, berupa `net/http` dan `goroutines`, dan sudah cukup robust untuk production, dan tidak terlalu perlu memanggil dependency dari library eksternal.
@@ -410,6 +463,7 @@ Pada singkatnya, Gin adalah framework web yang membuat routing, parsing request,
 > Framework adalah kumpulan library/alat yang menyediakan struktur siap pakai, sehingga kamu tidak perlu membangun semuanya dari nol. Gin mengurus hal-hal teknis seperti parsing HTTP request, routing URL, dan mengelola middleware -- kamu tinggal fokus menulis logic bisnis.
 
 Untuk menginstall gin, jalankan command ini di direktori projek Go kalian.
+
 ```bash
 # Install Gin
 go get github.com/gin-gonic/gin
@@ -419,6 +473,7 @@ go get github.com/gin-gonic/gin
 > `go get` adalah command untuk mendownload dan menginstall library/package eksternal ke project Go kamu. Library yang didownload akan otomatis tercatat di file `go.mod`.
 
 Kamu dapat merubah `main.go` kamu menjadi dibawah untuk mencoba apakah Gin berhasil diinstall.
+
 ```go
 package main
 
@@ -448,6 +503,7 @@ func main() {
 
 > [!NOTE]
 > **Catatan sintaks Gin:**
+>
 > - `import ( ... )` -- Kurung buka-tutup digunakan untuk mengimpor **beberapa package sekaligus**.
 > - `"net/http"` -- Package bawaan Go yang berisi konstanta HTTP seperti `http.StatusOK` (kode 200), `http.StatusBadRequest` (kode 400), dll.
 > - `r := gin.Default()` -- Membuat **router** Gin dengan middleware bawaan (logger untuk mencatat request, dan recovery untuk menangkap panic agar server tidak crash).
@@ -475,6 +531,7 @@ ORM (Object-Relational Mapper) adalah alat yang menjembatani kode Go dengan data
 > CRUD adalah singkatan dari **Create, Read, Update, Delete** -- empat operasi dasar yang dilakukan terhadap data di database. ORM memungkinkan kamu menulis query database menggunakan kode Go (struct dan method), bukan menulis SQL langsung.
 
 Untuk menginstall gorm, jalankan command ini di direktori projek Go kalian. Workshop ini akan memakai `postgres` sebagai sistem databasenya.
+
 ```bash
 # Install GORM dan driver PostgreSQL
 go get gorm.io/gorm
@@ -495,6 +552,7 @@ type User struct {
 > [!NOTE]
 > **Catatan tentang struct tag:**
 > Teks di dalam backtick (`` ` ``) setelah tipe data disebut **struct tag**. Tag ini memberi instruksi khusus ke library tertentu:
+>
 > - `gorm:"not null"` -- Memberi tahu GORM bahwa kolom ini **tidak boleh kosong** di database.
 > - `gorm:"unique;not null"` -- Kolom harus unik (tidak boleh ada duplikat) dan tidak boleh kosong.
 > - `gorm:"primary_key"` -- Menandai kolom ini sebagai primary key tabel.
@@ -555,7 +613,9 @@ func main() {
 	fmt.Println("Deleted user!")
 }
 ```
+
 > [!NOTE]
+>
 > - `dsn` (Data Source Name) -- String yang berisi semua informasi untuk koneksi ke database (alamat server, username, password, nama database, port).
 > - `os.Getenv("DB_HOST")` -- Mengambil nilai dari **environment variable**. Environment variable adalah pengaturan yang disimpan di luar kode (biasanya di file `.env`) agar data sensitif seperti password tidak di-hardcode.
 > - `fmt.Sprintf(...)` -- Seperti `fmt.Println` tapi tidak mencetak ke terminal, melainkan **mengembalikan string** dengan format yang ditentukan. `%s` adalah placeholder yang akan diganti nilainya.
@@ -563,6 +623,7 @@ func main() {
 > - `panic(...)` -- Menghentikan program secara paksa dengan pesan error. Digunakan untuk error yang **tidak bisa dipulihkan** seperti gagal koneksi database.
 
 Perlu diingat bahwa kamu perlu mensetup Postgres kamu terlebih dahulu:
+
 - Buat user di postgres `(CREATE USER your_username WITH PASSWORD 'your_password';)`
 - Buat database di postgres `(CREATE DATABASE your_dbname;)`
 - Berikan user akses ke database tersebut `(ALTER DATABASE your_dbname OWNER TO your_username;)`
@@ -668,7 +729,7 @@ Oleh karena itu, walaupun tidak diwajibkan oleh bahasa, kita perlu struktur proj
 
 ### Contoh Boilerplate
 
-Boilerplate singkat kata adalah template yang sering dipakai berulang-ulang dan biasanya sedikit / tidak ada variasi, yang bertujuan untuk memberikan struktur ke project kamu.  
+Boilerplate singkat kata adalah template yang sering dipakai berulang-ulang dan biasanya sedikit / tidak ada variasi, yang bertujuan untuk memberikan struktur ke project kamu.
 
 Terdapat beberapa boilerplate backend Go yang tersedia, tetapi di workshop ini kita akan menggunakan [boilerplate ini](https://github.com/Caknoooo/go-gin-clean-starter/tree/main).
 
@@ -752,6 +813,7 @@ Berikut adalah struktur folder boilerplate yang kita gunakan, beserta penjelasan
 
 > [!NOTE]
 > **Istilah-istilah penting:**
+>
 > - **Migration** -- Cara mengubah struktur database secara terkontrol dan terlacak. Mirip "version control untuk database." Setiap perubahan skema (tambah tabel, tambah kolom) dicatat dalam file migration.
 > - **Seeder** -- Script untuk mengisi database dengan data awal/contoh, berguna saat development agar tidak perlu input data manual setiap kali.
 > - **Middleware** -- Kode yang dijalankan **sebelum** request sampai ke handler utama. Contoh: mengecek apakah user sudah login (JWT valid) sebelum memproses request.
@@ -789,16 +851,16 @@ HTTP Request
 
 Setiap fitur baru dibuat dalam satu folder `modules/<nama_fitur>/` yang memiliki struktur seragam:
 
-| File | Tanggung Jawab |
-|---|---|
-| `controller/` | Terima `*gin.Context`, parsing input, kirim JSON response |
-| `dto/` | Struct untuk request body & response (Data Transfer Object) |
-| `validation/` | Aturan validasi input sebelum masuk ke service |
-| `service/` | Business logic -- tidak boleh tahu soal HTTP atau database secara langsung |
-| `repository/` | Semua query GORM -- satu-satunya layer yang boleh sentuh DB |
-| `query/` | Raw query atau filter kompleks yang dipakai oleh repository |
-| `routes.go` | Daftarkan semua endpoint milik module ini |
-| `tests/` | Unit test untuk validation & service |
+| File          | Tanggung Jawab                                                             |
+| ------------- | -------------------------------------------------------------------------- |
+| `controller/` | Terima `*gin.Context`, parsing input, kirim JSON response                  |
+| `dto/`        | Struct untuk request body & response (Data Transfer Object)                |
+| `validation/` | Aturan validasi input sebelum masuk ke service                             |
+| `service/`    | Business logic -- tidak boleh tahu soal HTTP atau database secara langsung |
+| `repository/` | Semua query GORM -- satu-satunya layer yang boleh sentuh DB                |
+| `query/`      | Raw query atau filter kompleks yang dipakai oleh repository                |
+| `routes.go`   | Daftarkan semua endpoint milik module ini                                  |
+| `tests/`      | Unit test untuk validation & service                                       |
 
 > [!TIP]
 > **Pola ini membuat kode mudah ditemukan.** Kalau ada bug di response format, cari di `controller`. Kalau ada bug di kalkulasi bisnis, cari di `service`. Kalau ada bug di query lambat, cari di `repository`.
@@ -837,6 +899,7 @@ Teori sudah cukup. Sekarang waktunya tangan kotor dengan kode sungguhan di dalam
 Bagian ini mendemonstrasikan alur pembuatan satu endpoint utuh, dari mendaftarkan route sampai data tersimpan ke database.
 
 **`database/entities/user_entity.go`** -- Skema tabel
+
 ```go
 package entities
 
@@ -850,10 +913,12 @@ type User struct {
 ```
 
 > [!NOTE]
+>
 > - `Common` -- Ini disebut **struct embedding**. Struct `User` "mewarisi" semua field dari struct `Common` (biasanya berisi `ID`, `CreatedAt`, `UpdatedAt`, `DeletedAt`). Mirip konsep inheritance tapi tanpa polymorphism.
 > - `gorm:"default:'user'"` -- Jika field `Role` tidak diisi saat membuat user baru, database akan otomatis mengisinya dengan `'user'`.
 
 **`modules/user/dto/user_dto.go`** -- Shape data masuk & keluar
+
 ```go
 package dto
 
@@ -872,12 +937,14 @@ type UserResponse struct {
 ```
 
 > [!NOTE]
+>
 > - `binding:"required"` -- Tag dari Gin yang berarti field ini **wajib diisi**. Jika client tidak mengirimnya, Gin akan otomatis mengembalikan error.
 > - `binding:"required,email"` -- Selain wajib, nilainya juga **harus berformat email** yang valid.
 > - `binding:"required,min=8"` -- Selain wajib, panjang string **minimal 8 karakter**.
 > - `CreateUserRequest` digunakan untuk **menerima** data dari client, sedangkan `UserResponse` digunakan untuk **mengirim** data kembali ke client (tanpa password!).
 
 **`modules/user/validation/user_validation.go`** -- Validasi input
+
 ```go
 package validation
 
@@ -896,11 +963,13 @@ func ValidateCreateUser(c *gin.Context) (*dto.CreateUserRequest, error) {
 ```
 
 > [!NOTE]
+>
 > - `c.ShouldBindJSON(&req)` -- Membaca body request (JSON), lalu **mengisinya ke struct** `req`. Jika JSON tidak valid atau field yang `required` kosong, fungsi ini mengembalikan error.
 > - `var req dto.CreateUserRequest` -- Membuat variabel `req` dengan tipe `CreateUserRequest` (bernilai kosong/default).
 > - `return &req, nil` -- Mengembalikan **pointer** ke `req` dan `nil` (tidak ada error). Pointer digunakan agar data tidak perlu di-copy (lebih efisien untuk struct besar).
 
 **`modules/user/repository/user_repository.go`** -- Query database
+
 ```go
 package repository
 
@@ -935,6 +1004,7 @@ func (r *UserRepository) FindAll() ([]entities.User, error) {
 ```
 
 > [!NOTE]
+>
 > - `func (r *UserRepository) Create(...)` -- Ini disebut **method**. Bedanya dengan fungsi biasa: method terikat ke sebuah struct. `(r *UserRepository)` disebut **receiver** -- artinya method `Create` milik struct `UserRepository`, dan bisa diakses via `r`.
 > - `r.db.Create(user)` -- Method GORM untuk insert data ke database. GORM otomatis membuat query `INSERT INTO users ...` dari struct yang diberikan.
 > - `r.db.First(&user, id)` -- Mengambil satu record pertama berdasarkan primary key (`id`). Mirip `SELECT * FROM users WHERE id = ? LIMIT 1`.
@@ -943,6 +1013,7 @@ func (r *UserRepository) FindAll() ([]entities.User, error) {
 > - `[]entities.User` -- Tanda `[]` di depan tipe artinya **slice** (array dinamis). Jadi `[]entities.User` berarti "kumpulan User."
 
 **`modules/user/service/user_service.go`** -- Business logic
+
 ```go
 package service
 
@@ -980,11 +1051,13 @@ func (s *UserService) CreateUser(req *dto.CreateUserRequest) (*entities.User, er
 ```
 
 > [!NOTE]
+>
 > - `helpers.HashPassword(req.Password)` -- Mengubah password plain text menjadi **hash** (string acak yang tidak bisa di-decode balik). Ini adalah praktik keamanan standar -- password **tidak boleh** disimpan dalam bentuk plain text di database.
 > - Service layer **tidak boleh tahu** tentang HTTP atau database secara langsung. Ia hanya menerima data (DTO), memproses business logic, dan memanggil repository untuk operasi database.
 > - Pola `New...()` (seperti `NewUserService`, `NewUserRepository`) adalah **constructor pattern** di Go -- fungsi yang membuat dan mengembalikan instance baru dari sebuah struct.
 
 **`modules/user/controller/user_controller.go`** -- Handle HTTP
+
 ```go
 package controller
 
@@ -1022,6 +1095,7 @@ func (ctrl *UserController) CreateUser(c *gin.Context) {
 ```
 
 > [!NOTE]
+>
 > - `http.StatusBadRequest` = kode 400 (request dari client salah/tidak valid).
 > - `http.StatusInternalServerError` = kode 500 (error di sisi server).
 > - `http.StatusCreated` = kode 201 (data berhasil dibuat).
@@ -1029,6 +1103,7 @@ func (ctrl *UserController) CreateUser(c *gin.Context) {
 > - `utils.ErrorResponse` dan `utils.SuccessResponse` -- Fungsi helper untuk memastikan semua response API memiliki **format yang seragam** (konsisten).
 
 **`modules/user/routes.go`** -- Daftarkan endpoint
+
 ```go
 package user
 
@@ -1049,6 +1124,7 @@ func RegisterUserRoutes(r *gin.RouterGroup, ctrl *controller.UserController) {
 ```
 
 > [!NOTE]
+>
 > - `r.Group("/users")` -- Membuat **route group**. Semua endpoint di dalam group ini otomatis diawali dengan `/users`.
 > - `users.POST("", ...)` -- Karena sudah di group `/users`, endpoint ini menjadi `POST /users`.
 > - `users.GET("/:id", ...)` -- `:id` disebut **URL parameter**. Nilainya dinamis -- misalnya `/users/5` berarti `id = 5`.
@@ -1064,6 +1140,7 @@ func RegisterUserRoutes(r *gin.RouterGroup, ctrl *controller.UserController) {
 > Ambil satu user berdasarkan ID. Kembalikan `404` jika tidak ditemukan.
 
 Tambahkan di `repository`:
+
 ```go
 func (r *UserRepository) FindByID(id uint) (*entities.User, error) {
     var user entities.User
@@ -1073,6 +1150,7 @@ func (r *UserRepository) FindByID(id uint) (*entities.User, error) {
 ```
 
 Tambahkan di `service`:
+
 ```go
 func (s *UserService) GetUserByID(id uint) (*entities.User, error) {
     return s.repo.FindByID(id)
@@ -1080,6 +1158,7 @@ func (s *UserService) GetUserByID(id uint) (*entities.User, error) {
 ```
 
 Tambahkan di `controller`:
+
 ```go
 func (ctrl *UserController) GetUserByID(c *gin.Context) {
     id, err := strconv.Atoi(c.Param("id"))
@@ -1099,6 +1178,7 @@ func (ctrl *UserController) GetUserByID(c *gin.Context) {
 ```
 
 > [!NOTE]
+>
 > - `strconv.Atoi(...)` -- Mengonversi **string ke integer** (Atoi = "ASCII to Integer"). Karena URL parameter selalu berupa string, kita perlu mengonversinya ke angka.
 > - `c.Param("id")` -- Mengambil nilai URL parameter `:id` dari request. Misalnya jika URL-nya `/users/5`, maka `c.Param("id")` mengembalikan `"5"` (string).
 > - `uint(id)` -- Mengonversi `int` ke `uint` (unsigned integer), karena fungsi `FindByID` meminta parameter bertipe `uint`.
@@ -1139,7 +1219,7 @@ func (ctrl *UserController) GetAllUsers(c *gin.Context) {
 
 <div align="center">
 
-*Tutorial ini adalah awal, bukan akhir. Yang paling penting adalah terus membangun sesuatu.*
+_Tutorial ini adalah awal, bukan akhir. Yang paling penting adalah terus membangun sesuatu._
 
 **Selamat ngoding!**
 
