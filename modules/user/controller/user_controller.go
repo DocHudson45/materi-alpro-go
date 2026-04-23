@@ -3,13 +3,13 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Caknoooo/go-pagination"
 	"github.com/Mobilizes/materi-be-alpro/modules/user/dto"
 	"github.com/Mobilizes/materi-be-alpro/modules/user/query"
 	"github.com/Mobilizes/materi-be-alpro/modules/user/service"
 	"github.com/Mobilizes/materi-be-alpro/modules/user/validation"
 	"github.com/Mobilizes/materi-be-alpro/pkg/constants"
 	"github.com/Mobilizes/materi-be-alpro/pkg/utils"
-	"github.com/Caknoooo/go-pagination"
 	"github.com/gin-gonic/gin"
 	"github.com/samber/do"
 	"gorm.io/gorm"
@@ -19,6 +19,7 @@ type (
 	UserController interface {
 		Me(ctx *gin.Context)
 		GetAllUser(ctx *gin.Context)
+		GetUserById(ctx *gin.Context)
 		Update(ctx *gin.Context)
 		Delete(ctx *gin.Context)
 	}
@@ -65,6 +66,20 @@ func (c *userController) Me(ctx *gin.Context) {
 	if err != nil {
 		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_GET_USER, err.Error(), nil)
 		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	res := utils.BuildResponseSuccess(dto.MESSAGE_SUCCESS_GET_USER, result)
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (c *userController) GetUserById(ctx *gin.Context) {
+	userId := ctx.Param("id")
+
+	result, err := c.userService.GetUserById(ctx.Request.Context(), userId)
+	if err != nil {
+		res := utils.BuildResponseFailed(dto.MESSAGE_FAILED_GET_USER, err.Error(), nil)
+		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
 

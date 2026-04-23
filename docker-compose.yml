@@ -27,11 +27,10 @@ services:
   postgres:
     hostname: postgres
     container_name: ${APP_NAME:-go-gin-clean-starter}-db
-    image: postgres:latest
+    image: postgres:16-alpine
     ports:
-      - ${DB_PORT}:5433
+      - ${DB_PORT}:5432
     volumes:
-      - ./docker/postgresql/tmp:/var/lib/postgresql/data
       - app-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=${DB_USER}
