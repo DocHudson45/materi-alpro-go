@@ -1,4 +1,4 @@
-# 📚 Dokumentasi API (Tugas Workshop ALPRO)
+# Dokumentasi API
 
 Berikut adalah Dokumentasi API untuk Modul User yang ditambahkan untuk memenuhi _Challenge A_ dan _Challenge B_.
 
